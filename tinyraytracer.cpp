@@ -158,10 +158,24 @@ Vec3f cast_ray(const Vec3f &orig, const Vec3f &dir, const std::vector<Sphere> &s
 }
 
 void render(const std::vector<Sphere> &spheres, const std::vector<Light> &lights) {
+    //CODE A ENLEVER POUR METTRE EN STEREO
     const int   width    = 1024;
     const int   height   = 768;
     const float fov      = M_PI/3.;
     std::vector<Vec3f> framebuffer(width*height);
+    //FIN DU CODE A ENLEVER
+
+    /*DEBUT CODE POUR STEREO
+    const float eyesep   = 0.2;
+    const int   delta    = 60; // focal distance 3
+    const int   width    = 1024+delta;
+    const int   height   = 768;
+    const float fov      = M_PI/3.;
+
+    std::vector<Vec3f> framebuffer1(width*height);
+    std::vector<Vec3f> framebuffer2(width*height);
+
+    FIN CODE POUR STEREO*/
 
 #pragma omp parallel for
     for (size_t j = 0; j<height; j++) { // actual rendering loop
@@ -169,10 +183,19 @@ void render(const std::vector<Sphere> &spheres, const std::vector<Light> &lights
             float dir_x =  (i + 0.5) -  width/2.;
             float dir_y = -(j + 0.5) + height/2.;    // this flips the image at the same time
             float dir_z = -height/(2.*tan(fov/2.));
+            //LIGNE DE CODE A ENLEVER POUR STEREO
             framebuffer[i+j*width] = cast_ray(Vec3f(0,0,0), Vec3f(dir_x, dir_y, dir_z).normalize(), spheres, lights);
+            //FIN LIGNE DE CODE A ENLEVER POUR STEREO
+
+
+            /*DEBUT CODE POUR STEREO
+            framebuffer1[i+j*width] = cast_ray(Vec3f(-eyesep/2,0,0), Vec3f(dir_x, dir_y, dir_z).normalize(), spheres, lights);
+            framebuffer2[i+j*width] = cast_ray(Vec3f(+eyesep/2,0,0), Vec3f(dir_x, dir_y, dir_z).normalize(), spheres, lights);
+            //FIN CODE POUR STEREO*/
         }
     }
 
+    //CODE A ENLEVER POUR METTRE EN STEREO
     std::vector<unsigned char> pixmap(width*height*3);
     for (size_t i = 0; i < height*width; ++i) {
         Vec3f &c = framebuffer[i];
@@ -183,6 +206,31 @@ void render(const std::vector<Sphere> &spheres, const std::vector<Light> &lights
         }
     }
     stbi_write_jpg("out.jpg", width, height, 3, pixmap.data(), 100);
+    //FIN DU CODE A ENLEVER
+
+    /*DEBUT CODE POUR STEREO
+    std::vector<unsigned char> pixmap((width-delta)*height*3);
+    for (size_t j = 0; j<height; j++) {
+        for (size_t i = 0; i<width-delta; i++) {
+            Vec3f c1 = framebuffer1[i+delta+j*width];
+            Vec3f c2 = framebuffer2[i+      j*width];
+
+            float max1 = std::max(c1[0], std::max(c1[1], c1[2]));
+            if (max1>1) c1 = c1*(1./max1);
+            float max2 = std::max(c2[0], std::max(c2[1], c2[2]));
+            if (max2>1) c2 = c2*(1./max2);
+            float avg1 = (c1.x+c1.y+c1.z)/3.;
+            float avg2 = (c2.x+c2.y+c2.z)/3.;
+
+            pixmap[(j*(width-delta) + i)*3  ] = 255*avg1;
+            pixmap[(j*(width-delta) + i)*3+1] = 0;
+            pixmap[(j*(width-delta) + i)*3+2] = 255*avg2;
+        }
+    }
+    stbi_write_jpg("out.jpg", width-delta, height, 3, pixmap.data(), 100);
+    FIN CODE POUR STEREO*/
+
+
 }
 
 int main() {
