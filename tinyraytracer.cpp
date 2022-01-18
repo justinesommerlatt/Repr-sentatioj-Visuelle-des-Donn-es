@@ -252,12 +252,18 @@ int main() {
     Material      glass(1.5, Vec4f(0.0,  0.5, 0.1, 0.8), Vec3f(0.6, 0.7, 0.8),  125.);
     Material red_rubber(1.0, Vec4f(0.9,  0.1, 0.0, 0.0), Vec3f(0.3, 0.1, 0.1),   10.);
     Material     mirror(1.0, Vec4f(0.0, 10.0, 0.8, 0.0), Vec3f(1.0, 1.0, 1.0), 1425.);
+    Material grey_rubber( 1.0, Vec4f(0.9, 0.1, 0.0, 0.0), Vec3f(0.15, 0.15, 0.15),   10.);
+    Material darkgrey_rubber( 1.0, Vec4f(0.9, 0.1, 0.0, 0.0), Vec3f(0.12, 0.12, 0.12),   10.);
 
     std::vector<Sphere> spheres;
     spheres.push_back(Sphere(Vec3f(-3,    0,   -16), 2,      ivory));
     spheres.push_back(Sphere(Vec3f(-1.0, -1.5, -12), 2,      glass));
     spheres.push_back(Sphere(Vec3f( 1.5, -0.5, -18), 3, red_rubber));
     spheres.push_back(Sphere(Vec3f( 7,    5,   -18), 4,     mirror));
+
+
+    spheres.push_back(Sphere(Vec3f(-8, 5, -16), 3, grey_rubber));
+    spheres.push_back(Sphere(Vec3f(-7, 4.5, -12), 1, darkgrey_rubber));
 
     std::vector<Light>  lights;
     lights.push_back(Light(Vec3f(-20, 20,  20), 1.5));
