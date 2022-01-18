@@ -104,8 +104,15 @@ Vec3f cast_ray(const Vec3f &orig, const Vec3f &dir, const std::vector<Sphere> &s
         //return Vec3f(dir.x, dir.y, 0);
 
         //Ajout d'une image de fond "droite"
-        int i= (dir.x + 1)/2*(envmap_width-1);
+        /*int i= (dir.x + 1)/2*(envmap_width-1);
         int j= (-dir.y + 1)/2*(envmap_height-1);
+        return envmap[i+j*envmap_width];*/
+
+        //Image en fond "arrondie"
+        float theta = acos(dir.y/sqrt(dir*dir));
+        float phi = atan2(dir.z, dir.x);
+        int i = (phi+M_PI)/(2*M_PI)*(envmap_width-1);
+        int j = theta/M_PI*(envmap_height-1);
         return envmap[i+j*envmap_width];
 
     }
