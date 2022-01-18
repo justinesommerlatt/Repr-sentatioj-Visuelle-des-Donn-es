@@ -1,0 +1,26 @@
+Performing C++ SOURCE FILE Test flag_supported failed with the following output:
+Change Dir: /Users/justinesommerlatt/Documents/tinyraytracer/cmake-build-debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make -f Makefile cmTC_80733/fast && /Library/Developer/CommandLineTools/usr/bin/make  -f CMakeFiles/cmTC_80733.dir/build.make CMakeFiles/cmTC_80733.dir/build
+Building CXX object CMakeFiles/cmTC_80733.dir/src.cxx.o
+/Library/Developer/CommandLineTools/usr/bin/c++ -Dflag_supported  -Wall -Wextra -pedantic -std=c++14 -O3  -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk   -fopenmp -MD -MT CMakeFiles/cmTC_80733.dir/src.cxx.o -MF CMakeFiles/cmTC_80733.dir/src.cxx.o.d -o CMakeFiles/cmTC_80733.dir/src.cxx.o -c /Users/justinesommerlatt/Documents/tinyraytracer/cmake-build-debug/CMakeFiles/CMakeTmp/src.cxx
+clang: error: unsupported option '-fopenmp'
+make[1]: *** [CMakeFiles/cmTC_80733.dir/src.cxx.o] Error 1
+make: *** [cmTC_80733/fast] Error 2
+
+
+Source file was:
+int main() { return 0; }
+Performing C++ SOURCE FILE Test flag_supported failed with the following output:
+Change Dir: /Users/justinesommerlatt/Documents/tinyraytracer/cmake-build-debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/make -f Makefile cmTC_26a6b/fast && /Library/Developer/CommandLineTools/usr/bin/make  -f CMakeFiles/cmTC_26a6b.dir/build.make CMakeFiles/cmTC_26a6b.dir/build
+Building CXX object CMakeFiles/cmTC_26a6b.dir/src.cxx.o
+/Library/Developer/CommandLineTools/usr/bin/c++ -Dflag_supported  -Wall -Wextra -pedantic -std=c++11 -O3  -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk   -fopenmp -MD -MT CMakeFiles/cmTC_26a6b.dir/src.cxx.o -MF CMakeFiles/cmTC_26a6b.dir/src.cxx.o.d -o CMakeFiles/cmTC_26a6b.dir/src.cxx.o -c /Users/justinesommerlatt/Documents/tinyraytracer/cmake-build-debug/CMakeFiles/CMakeTmp/src.cxx
+clang: error: unsupported option '-fopenmp'
+make[1]: *** [CMakeFiles/cmTC_26a6b.dir/src.cxx.o] Error 1
+make: *** [cmTC_26a6b/fast] Error 2
+
+
+Source file was:
+int main() { return 0; }
