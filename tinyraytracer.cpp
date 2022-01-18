@@ -98,8 +98,16 @@ Vec3f cast_ray(const Vec3f &orig, const Vec3f &dir, const std::vector<Sphere> &s
 
     if (depth>4 || !scene_intersect(orig, dir, spheres, point, N, material)) {
         //Changement de couleur de fond, couleur unie
-        return Vec3f(dir.x, dir.y, 0); //dégradé dans les différentes directions en fond
         //return Vec3f(0.9, 0.9, 0.9); // background color
+
+        //Dégradé dans les différentes directions en fond
+        //return Vec3f(dir.x, dir.y, 0);
+
+        //Ajout d'une image de fond "droite"
+        int i= (dir.x + 1)/2*(envmap_width-1);
+        int j= (-dir.y + 1)/2*(envmap_height-1);
+        return envmap[i+j*envmap_width];
+
     }
 
     Vec3f reflect_dir = reflect(dir, N).normalize();
