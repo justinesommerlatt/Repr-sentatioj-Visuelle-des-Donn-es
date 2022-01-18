@@ -97,7 +97,8 @@ Vec3f cast_ray(const Vec3f &orig, const Vec3f &dir, const std::vector<Sphere> &s
     Material material;
 
     if (depth>4 || !scene_intersect(orig, dir, spheres, point, N, material)) {
-        return Vec3f(0.2, 0.7, 0.8); // background color
+        //Changement de couleur de fond, couleur unie
+        return Vec3f(0.9, 0.9, 0.9); // background color
     }
 
     Vec3f reflect_dir = reflect(dir, N).normalize();
