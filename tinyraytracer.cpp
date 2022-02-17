@@ -52,6 +52,22 @@ struct Sphere {
         if (t0 < 0) return false;
         return true;
     }
+
+    bool ray_intersect(const Vec3f &orig, const Vec3f &dir, float &t0, float &t1) const {
+        Vec3f L = center - orig;
+        float tca = L*dir;
+        float d2 = L*L - tca*tca;
+        if (d2 > radius*radius) {
+            return false;
+        }
+        float thc = sqrtf(radius*radius - d2);
+        t0 = tca - thc;
+        t1 = tca + thc;
+        if(t1<0) {
+            return false;
+        }
+        return true;
+    }
 };
 
 Vec3f reflect(const Vec3f &I, const Vec3f &N) {
@@ -93,7 +109,31 @@ bool scene_intersect(const Vec3f &orig, const Vec3f &dir, const std::vector<Sphe
 
     }
 
+    Sphere small_sphere = Sphere(Vec3f(-5.5, 4.9, -16), 0.9, Material(1.0, Vec4f(0.9, 0.1, 0.0, 0.0), Vec3f(0.15, 0.15, 0.15),   10.));
+    Sphere large_sphere = Sphere(Vec3f(-8, 5, -18), 3, Material(1.0, Vec4f(0.9, 0.1, 0.0, 0.0), Vec3f(0.12, 0.12, 0.12),   10.));
 
+    float dist_i_t0;
+    float dist_i_t1;
+    if (small_sphere.ray_intersect(orig, dir, dist_i_t0, dist_i_t1) && dist_i_t0 < spheres_dist) {
+        hit = orig + dir*dist_i_t1;
+        if (sqrt(pow(large_sphere.center.x - hit.x, 2) + pow(large_sphere.center.y - hit.y, 2) + pow(large_sphere.center.z - hit.z, 2)) <= large_sphere.radius) {
+            spheres_dist = dist_i_t1;
+            hit = orig + dir*dist_i_t1;
+            N = (-(hit - small_sphere.center)).normalize();
+            material = small_sphere.material;
+        }
+    }
+
+    float dist_i;
+    if (large_sphere.ray_intersect(orig, dir, dist_i) && dist_i < spheres_dist) {
+        hit = orig + dir*dist_i;
+        if (sqrt(pow(small_sphere.center.x - hit.x, 2) + pow(small_sphere.center.y - hit.y, 2) + pow(small_sphere.center.z - hit.z, 2)) >= small_sphere.radius) {
+            spheres_dist = dist_i;
+            hit = hit;
+            N = (hit - large_sphere.center).normalize();
+            material = large_sphere.material;
+        }
+    }
 
     float checkerboard_dist = std::numeric_limits<float>::max();
     if (fabs(dir.y)>1e-3)  {
