@@ -93,6 +93,8 @@ bool scene_intersect(const Vec3f &orig, const Vec3f &dir, const std::vector<Sphe
 
     }
 
+
+
     float checkerboard_dist = std::numeric_limits<float>::max();
     if (fabs(dir.y)>1e-3)  {
         float d = -(orig.y+4)/dir.y; // the checkerboard plane has equation y = -4
@@ -159,13 +161,13 @@ Vec3f cast_ray(const Vec3f &orig, const Vec3f &dir, const std::vector<Sphere> &s
 
 void render(const std::vector<Sphere> &spheres, const std::vector<Light> &lights) {
     //CODE A ENLEVER POUR METTRE EN STEREO
-    const int   width    = 1024;
+    /**const int   width    = 1024;
     const int   height   = 768;
     const float fov      = M_PI/3.;
-    std::vector<Vec3f> framebuffer(width*height);
+    std::vector<Vec3f> framebuffer(width*height);**/
     //FIN DU CODE A ENLEVER
 
-    /*DEBUT CODE POUR STEREO
+    /*DEBUT CODE POUR STEREO*/
     const float eyesep   = 0.2;
     const int   delta    = 60; // focal distance 3
     const int   width    = 1024+delta;
@@ -175,7 +177,7 @@ void render(const std::vector<Sphere> &spheres, const std::vector<Light> &lights
     std::vector<Vec3f> framebuffer1(width*height);
     std::vector<Vec3f> framebuffer2(width*height);
 
-    FIN CODE POUR STEREO*/
+    /*FIN CODE POUR STEREO*/
 
 #pragma omp parallel for
     for (size_t j = 0; j<height; j++) { // actual rendering loop
@@ -184,11 +186,11 @@ void render(const std::vector<Sphere> &spheres, const std::vector<Light> &lights
             float dir_y = -(j + 0.5) + height/2.;    // this flips the image at the same time
             float dir_z = -height/(2.*tan(fov/2.));
             //LIGNE DE CODE A ENLEVER POUR STEREO
-            framebuffer[i+j*width] = cast_ray(Vec3f(0,0,0), Vec3f(dir_x, dir_y, dir_z).normalize(), spheres, lights);
+            //framebuffer[i+j*width] = cast_ray(Vec3f(0,0,0), Vec3f(dir_x, dir_y, dir_z).normalize(), spheres, lights);
             //FIN LIGNE DE CODE A ENLEVER POUR STEREO
 
 
-            /*DEBUT CODE POUR STEREO
+            /*DEBUT CODE POUR STEREO*/
             framebuffer1[i+j*width] = cast_ray(Vec3f(-eyesep/2,0,0), Vec3f(dir_x, dir_y, dir_z).normalize(), spheres, lights);
             framebuffer2[i+j*width] = cast_ray(Vec3f(+eyesep/2,0,0), Vec3f(dir_x, dir_y, dir_z).normalize(), spheres, lights);
             //FIN CODE POUR STEREO*/
@@ -196,7 +198,7 @@ void render(const std::vector<Sphere> &spheres, const std::vector<Light> &lights
     }
 
     //CODE A ENLEVER POUR METTRE EN STEREO
-    std::vector<unsigned char> pixmap(width*height*3);
+    /**std::vector<unsigned char> pixmap(width*height*3);
     for (size_t i = 0; i < height*width; ++i) {
         Vec3f &c = framebuffer[i];
         float max = std::max(c[0], std::max(c[1], c[2]));
@@ -205,10 +207,10 @@ void render(const std::vector<Sphere> &spheres, const std::vector<Light> &lights
             pixmap[i*3+j] = (unsigned char)(255 * std::max(0.f, std::min(1.f, framebuffer[i][j])));
         }
     }
-    stbi_write_jpg("out.jpg", width, height, 3, pixmap.data(), 100);
+    stbi_write_jpg("out.jpg", width, height, 3, pixmap.data(), 100);**/
     //FIN DU CODE A ENLEVER
 
-    /*DEBUT CODE POUR STEREO
+    /*DEBUT CODE POUR STEREO*/
     std::vector<unsigned char> pixmap((width-delta)*height*3);
     for (size_t j = 0; j<height; j++) {
         for (size_t i = 0; i<width-delta; i++) {
@@ -228,7 +230,7 @@ void render(const std::vector<Sphere> &spheres, const std::vector<Light> &lights
         }
     }
     stbi_write_jpg("out.jpg", width-delta, height, 3, pixmap.data(), 100);
-    FIN CODE POUR STEREO*/
+    /*FIN CODE POUR STEREO*/
 
 
 }
@@ -252,18 +254,14 @@ int main() {
     Material      glass(1.5, Vec4f(0.0,  0.5, 0.1, 0.8), Vec3f(0.6, 0.7, 0.8),  125.);
     Material red_rubber(1.0, Vec4f(0.9,  0.1, 0.0, 0.0), Vec3f(0.3, 0.1, 0.1),   10.);
     Material     mirror(1.0, Vec4f(0.0, 10.0, 0.8, 0.0), Vec3f(1.0, 1.0, 1.0), 1425.);
-    Material grey_rubber( 1.0, Vec4f(0.9, 0.1, 0.0, 0.0), Vec3f(0.15, 0.15, 0.15),   10.);
-    Material darkgrey_rubber( 1.0, Vec4f(0.9, 0.1, 0.0, 0.0), Vec3f(0.12, 0.12, 0.12),   10.);
+    //Material grey_rubber( 1.0, Vec4f(0.9, 0.1, 0.0, 0.0), Vec3f(0.15, 0.15, 0.15),   10.);
+    //Material darkgrey_rubber( 1.0, Vec4f(0.9, 0.1, 0.0, 0.0), Vec3f(0.12, 0.12, 0.12),   10.);
 
     std::vector<Sphere> spheres;
     spheres.push_back(Sphere(Vec3f(-3,    0,   -16), 2,      ivory));
     spheres.push_back(Sphere(Vec3f(-1.0, -1.5, -12), 2,      glass));
     spheres.push_back(Sphere(Vec3f( 1.5, -0.5, -18), 3, red_rubber));
     spheres.push_back(Sphere(Vec3f( 7,    5,   -18), 4,     mirror));
-
-
-    spheres.push_back(Sphere(Vec3f(-8, 5, -16), 3, grey_rubber));
-    spheres.push_back(Sphere(Vec3f(-7, 4.5, -12), 1, darkgrey_rubber));
 
     std::vector<Light>  lights;
     lights.push_back(Light(Vec3f(-20, 20,  20), 1.5));
